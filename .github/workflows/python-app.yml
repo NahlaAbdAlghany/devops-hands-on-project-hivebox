@@ -45,7 +45,6 @@ jobs:
        dockerfile: Dockerfile
     - name: Build Docker image
       run: |
-        docker build -t my-python-app:${{ github.sha }}
         docker build -t my-python-app:latest .
 
   scorecard:
