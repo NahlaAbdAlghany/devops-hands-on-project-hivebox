@@ -51,10 +51,19 @@ jobs:
       run: |
        docker run -d -p 9999:9999 --name hive-box my-python-app:latest   
        sleep 10 
-       ACTUAL_VERSION=$(curl -s http://localhost:9999/version | jq -r '.version')
-
-       echo $ACTUAL_VERSION
-
+       echo "Testing /version endpoint..."
+       VERSION_RESPONSE=$(curl -s http://localhost:9999/version)
+       echo "Version response: $VERSION_RESPONSE"
+    
+       # Simple check - just verify we get a non-empty response
+       if [[ -n "$VERSION_RESPONSE" ]]; then
+         echo "✅ Version endpoint test passed"
+       else
+         echo "❌ Version endpoint returned empty response"
+       docker logs hive-box
+       exit 1
+       fi
+    
 
        # Clean up
        docker stop test-app
