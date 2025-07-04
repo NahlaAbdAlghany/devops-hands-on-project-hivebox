@@ -51,7 +51,7 @@ jobs:
       run: |
        docker run -d -p 9999:9999 --name hive-box my-python-app:latest   
        sleep 10 
-       ACTUAL_VERSION=$(curl -s http://localhost:8080/version | jq -r '.version')
+       ACTUAL_VERSION=$(curl -s http://localhost:9999/version | jq -r '.version')
 
        echo $ACTUAL_VERSION
 
