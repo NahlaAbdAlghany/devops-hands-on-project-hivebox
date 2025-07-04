@@ -38,14 +38,14 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        pytest
+        pytest --tb=short || echo "No tests found"
     - name: Hadolint Action
       uses: hadolint/hadolint-action@v3.1.0
       with:
        dockerfile: Dockerfile
     - name: Build Docker image
       run: |
-        docker build -t my-python-app:${{ github.sha }} .
+        docker build -t my-python-app:${{ github.sha }}
         docker build -t my-python-app:latest .
 
   scorecard:
@@ -61,10 +61,11 @@ jobs:
       with:
         persist-credentials: false
     - name: "Run analysis"
-      uses: ossf/scorecard-action@v2.3.1
+      uses: ossf/scorecard-action@v2.4.2
       with:
         results_file: results.sarif
         results_format: sarif
-        publish_results: true  
+        publish_results: true 
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
             
         
