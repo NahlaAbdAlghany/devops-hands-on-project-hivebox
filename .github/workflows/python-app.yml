@@ -47,24 +47,17 @@ jobs:
       run: |
         docker build -t my-python-app:latest .
 
-  scorecard:
-    name: Scorecard analysis
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      security-events: write
-      id-token: write
-    steps:
-    - name: "Checkout code"
-      uses: actions/checkout@v4
-      with:
-        persist-credentials: false
-    - name: "Run analysis"
-      uses: ossf/scorecard-action@v2.4.2
-      with:
-        results_file: results.sarif
-        results_format: sarif
-        publish_results: true 
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
+    - name: run container to test endpoint
+      run: |
+       docker run -d -p 9999:9999 --name hive-box my-python-app:latest   
+       sleep 10 
+       ACTUAL_VERSION=$(curl -s http://localhost:8080/version | jq -r '.version')
+
+       echo $ACTUAL_VERSION
+
+
+       # Clean up
+       docker stop test-app
+       docker rm test-app
             
         
